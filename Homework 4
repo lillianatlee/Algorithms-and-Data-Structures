@@ -1,0 +1,72 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package h_hw_4;
+
+import javafx.application.Application;
+import static javafx.application.Application.launch;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
+/**
+ *
+ * @author lillianlinden
+ */
+public class H_hw_4 extends Application {
+    static int x = 0, y = 0;
+    @Override
+    public void start(Stage primaryStage) {
+        
+        Pane root = new Pane();
+        
+        Scene scene = new Scene(root, 300, 250);
+        
+        primaryStage.setTitle("Etch-a-Sketch");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+        root.requestFocus();
+        //so root knows every time keyboard is pressed root has to react
+        
+        root.setOnKeyPressed(e -> {
+            switch (e.getCode()) {
+                case UP: 
+                    Line l1 = new Line(x, y, x, y--);
+                    root.getChildren().add(l1);
+                    y--;
+                    break;
+                case DOWN: 
+                    Line l2 = new Line(x, y, x, y++);
+                    root.getChildren().add(l2);
+                    y++;
+                    break;
+                case LEFT: 
+                    Line l3 = new Line(x, y, x--, y);
+                    root.getChildren().add(l3);
+                    x--;
+                    break;
+                case RIGHT: 
+                    Line l4 = new Line(x, y, x++, y);
+                    root.getChildren().add(l4);
+                    x++;
+                    break;
+            }
+        });
+    }
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        launch(args);
+    }
+    
+}
