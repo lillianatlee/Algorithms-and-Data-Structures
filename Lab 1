@@ -1,0 +1,54 @@
+* To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package followthemouse;
+
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
+public class FollowTheMouse extends Application {
+    
+    @Override
+    public void start(Stage primaryStage) {
+        Text txt = new Text(20, 20, "mouse");
+        
+        Rectangle r = new Rectangle (20, 20, 100, 100);
+        r.setFill(Color.TRANSPARENT);
+        r.setStroke(Color.AQUAMARINE);
+        
+        Pane root = new Pane();
+        root.getChildren().add(txt);
+        root.getChildren().add(r);
+        Scene scene = new Scene(root, 300, 250);
+        primaryStage.setTitle("Lab 1");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+        
+        r.setOnMouseEntered(e -> {
+            txt.setText("Mouse point is inside the rectangle.");
+        });
+        r.setOnMouseExited(e -> {
+            txt.setText("Mouse point is outside the rectangle.");
+        });
+        root.setOnMouseMoved(e -> {
+            txt.setX(e.getSceneX());
+            txt.setY(e.getSceneY());
+        });
+        
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+    
+}
