@@ -1,0 +1,31 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+public class HW7 {
+
+	public static void main(String[] args) {
+		File file = new File("Commitment.txt");
+		int[] letters = new int[26];
+		
+		try {
+			Scanner in = new Scanner(file);
+			while (in.hasNext()) {
+				String s = in.next().toLowerCase();
+				for (int i = 0; i < s.length(); i++) {
+					if ((int)(s.charAt(i)) - 97 >= 26 || (int)(s.charAt(i)) - 97 < 0) continue;
+					letters[(int)(s.charAt(i)) - 97]++;
+				}
+				
+			}
+			for (int i = 0; i < 26; i++) {
+				System.out.println("Number of " + (char)(i + 65) + "'s: " + letters[i]);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+
+	}
+
+}
