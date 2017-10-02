@@ -1,0 +1,34 @@
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+
+public class HW9 {
+
+	public static void main(String[] args) throws IOException {
+		try(
+			RandomAccessFile file = new RandomAccessFile("Count.dat", "rw");       
+		) {
+			int counter = file.readInt();
+			counter++;
+			file.seek(0);
+		            
+			file.writeInt(counter);
+
+		} catch (IOException ex) {
+			System.out.println(ex.getMessage());
+		}
+		        
+		try (
+			RandomAccessFile file = new RandomAccessFile("Count.dat", "rw");
+		) {
+		    System.out.println("This program has been launched " + file.readInt() + " times.");
+		}
+
+	}
+
+}
