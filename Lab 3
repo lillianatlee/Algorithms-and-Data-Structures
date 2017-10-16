@@ -11,8 +11,8 @@ public class Lab3 {
 		try {
 			Scanner in = new Scanner(file);
 			Map<Character, Integer> map = new HashMap<>();
-			while (in.hasNext()) {
-				String s = in.next().toLowerCase();
+			while (in.hasNextLine()) {
+				String s = in.nextLine().toLowerCase();
 				for (int i = 0; i < s.length(); i++) {
 					if (!map.containsKey(s.charAt(i))) {
 						map.put(s.charAt(i), 1);
