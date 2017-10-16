@@ -1,0 +1,36 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class Lab3 {
+
+	public static void main(String[] args) {
+		File file = new File("Unicode.txt");
+		try {
+			Scanner in = new Scanner(file);
+			Map<Character, Integer> map = new HashMap<>();
+			while (in.hasNext()) {
+				String s = in.next().toLowerCase();
+				for (int i = 0; i < s.length(); i++) {
+					if (!map.containsKey(s.charAt(i))) {
+						map.put(s.charAt(i), 1);
+					}
+					else {
+						map.put(s.charAt(i), map.get(s.charAt(i)) + 1);
+					}
+				}
+			}
+			for (Character c: map.keySet()) {
+				System.out.println("'" + c + "' occurs " + map.get(c) + " time(s).");
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		
+
+	}
+
+}
