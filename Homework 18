@@ -1,0 +1,114 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package self.avoiding_random_walk;
+
+import java.util.ArrayList;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Application;
+import static javafx.application.Application.launch;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+
+/**
+ *
+ * @author lillianlinden
+ */
+public class SelfAvoiding_Random_Walk extends Application {
+        boolean claustrophobic = false;
+	boolean[][] hasLine = new boolean[17][17];
+	int[] XSet = {-1, 1, 0, 0};
+	int[] YSet = {0, 0, -1, 1};
+	int x = 8;
+        int y = 8;
+
+    @Override
+    public void start(Stage primaryStage) {
+        Pane root = new Pane();
+        Scene scene = new Scene(root, 320, 370);
+        //Grid
+        for (int i = 0; i < 17; i++) {
+                Line l = new Line();
+                l.setStartX(i * 20);
+                l.setStartY(0);
+                l.setEndX(l.getStartX());
+                l.setEndY(320);
+                l.setOpacity(.3);
+                root.getChildren().add(l);
+        }
+        for (int i = 0; i < 17; i++) {
+                Line l = new Line();
+                l.setStartX(0);
+                l.setStartY(i * 20);
+                l.setEndX(320);
+                l.setEndY(l.getStartY());
+                l.setOpacity(.3);
+                root.getChildren().add(l);
+        }
+        Button b = new Button("Start");
+        b.setLayoutX(137.5);
+        b.setLayoutY(330);
+        root.getChildren().add(b);
+        
+        Timeline animation = new Timeline(new KeyFrame(Duration.seconds(.05), e -> {		
+            ArrayList<Integer> valX = new ArrayList<>();
+            ArrayList<Integer> valY = new ArrayList<>();
+
+            for(int i = 0; i < 4; i++){
+                int newX = x + XSet[i];
+		int newY = y + YSet[i];
+		if(newX >= 0 && newX <= 16 && newY >= 0 && newY <= 16 && !hasLine[newX][newY]){
+                    valX.add(XSet[i]);
+                    valY.add(YSet[i]);
+		}
+            }
+
+            if(valX.isEmpty()){
+                claustrophobic = true;
+		return;
+            }
+			
+            int rand = (int)(Math.random() * valX.size());
+            int newX = x + valX.get(rand);
+            int newY = y + valY.get(rand);
+
+            if(newX >= 0 && newX <= 16 && newY >= 0 && newY <= 16 && !hasLine[newX][newY]){
+		Line temp = new Line(x * 20, y * 20, newX * 20, newY * 20);
+		temp.setStrokeWidth(2);
+		root.getChildren().add(temp);
+		hasLine[x][y] = true;
+		x = newX;
+		y = newY;
+            }
+	}));
+
+	animation.setCycleCount(Timeline.INDEFINITE);
+                
+        b.setOnAction(e -> {
+            animation.play();
+        });
+		
+	if(claustrophobic)
+            animation.pause();
+
+	primaryStage.setTitle("HW18");
+	primaryStage.setScene(scene);
+	primaryStage.show();
+	
+    }
+
+	public static void main(String[] args) {
+		launch(args);
+	}
+}
