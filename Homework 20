@@ -1,0 +1,37 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.Scanner;
+
+public class FileBlocks {
+
+	public static void main(String[] args) throws FileNotFoundException {
+		Scanner sc = new Scanner(System.in);
+		PrintWriter out = new PrintWriter(new File("fileblocks.out"));
+		int n = sc.nextInt();
+		sc.nextLine();
+		
+		int[] alphabet = new int[26];
+		
+		for (int i = 0; i < n; i++) {
+			String s = sc.nextLine();
+			boolean[] betabet = new boolean[26];
+			for (int j = 0; j < s.length(); j++) {
+				if (s.charAt(j) >= 'a' && s.charAt(i) <= 'z') {
+					betabet[s.charAt(j) - 'a'] = true;
+				}
+			}
+			for (int k = 0; k < 26; k++) {
+				if (betabet[k]) {
+					alphabet[k]++;
+				}
+			}
+		}
+		
+		for (int i = 0; i < alphabet.length; i++) {
+			out.println(alphabet[i]);
+			System.out.println( alphabet[i]);
+		}
+	}
+
+}
