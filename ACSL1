@@ -1,0 +1,146 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Scanner;
+
+public class Contest_1 {
+	public static void main(String[] args) {
+		System.out.print("Input # 1: ");
+		Scanner sc = new Scanner(System.in);
+		String firstLine = sc.nextLine();
+		ArrayList<Integer> initialPlayer1 = new ArrayList<>();
+		ArrayList<Integer> initialPlayer2 = new ArrayList<>();
+		int a = 0, b = 0;
+		for (int i = 0; i < firstLine.length(); i++) {
+			if (firstLine.charAt(i) == ' ') {
+				continue;
+			}
+			int toAdd = 0;
+			if (firstLine.charAt(i) >= '2' && firstLine.charAt(i) <= '9') {
+				toAdd = firstLine.charAt(i) - '0';
+			} else {
+				switch(firstLine.charAt(i)) {
+				case 'A': toAdd = 14; break;
+				case 'T': toAdd = 10; break;
+				case 'J': toAdd = 11; break;
+				case 'Q': toAdd = 12; break;
+				case 'K': toAdd = 13; break;
+				}
+			}
+			if (a < 5) {
+				initialPlayer1.add(toAdd);
+				a++;
+			} else {
+				initialPlayer2.add(toAdd);
+				b++;
+			}
+		}
+		for(int l = 1; l <= 5; l++) {
+	 		int[] player1 = new int[5];
+ 			int[] player2 = new int[5];
+			for(int i = 0; i < 5; i++) {
+	 			player1[i] = initialPlayer1.get(i);
+	 			player2[i] = initialPlayer2.get(i);
+	 		}
+ 			System.out.print("Input #" + (l + 1) + ": ");
+			Scanner st = new Scanner(sc.nextLine());
+	 		int points = Integer.parseInt(st.next());
+	 		Queue<Integer> hand = new LinkedList<>();
+	 		for (int i = 0; i < 10; i++) {
+	 			hand.offer(number(st.next().charAt(0)));
+ 			}
+			boolean turn1 = true;
+	 		while (points <= 99) {
+	 			if (turn1) {
+	 				Arrays.sort(player1);
+	 				int toPlay = player1[2];
+	 				if (!hand.isEmpty())
+	 					player1[2] = hand.poll();
+ 					else
+ 						player1[2] = -1;	
+						if (toPlay == 9) {
+	 					points += 0;
+	 				} else if (toPlay == 10) {
+	 					if (crossed(points, -10))
+	 						points += 5;
+	 					points -= 10;
+	 					} else if(toPlay == 7) {
+ 						if (points + 7 > 99)
+							points++;
+	 					else {
+	 						if (crossed(points, 7))
+	 							points += 5;
+	 						points += 7;
+	 					}
+	 					} else {
+ 						if (crossed(points, toPlay))
+							points += 5;
+	 					points += toPlay;
+	 				}
+	 			} else {
+	 				Arrays.sort(player2);
+	 				int toPlay = player2[2];
+ 					if (!hand.isEmpty())
+						player2[2] = hand.poll();
+	 				else
+	 					player2[2] = -1;
+	 				if (toPlay == 9) {
+	 					points += 0;
+	 				} else if(toPlay == 10) {
+ 						if (crossed(points, -10))
+ 							points += 5;
+							points -= 10;
+	 				} else if (toPlay == 7) {
+	 					if (points + 7 > 99)
+	 						points++;
+	 					else {
+	 						if (crossed(points, 7))
+	 							points += 5;
+ 							points += 7;
+						}
+	 				} else {
+	 					if (crossed(points, toPlay))
+	 						points += 5;
+	 					points += toPlay;
+	 				}
+ 				}
+				turn1 = !turn1;
+ 			}
+	 		if (turn1) {
+	 			System.out.println("Output #" + l + ": " + points + ", Player #1");
+	 		} else {
+	 			System.out.println("Output #" + l + ": " + points + ", Player #2");
+	 		}
+ 		}
+ 	}
+	
+	static int number(char a) {
+		int b = 0;
+		switch(a) {
+		case '2': b = 2; break;
+		case '3': b = 3; break;
+		case '4': b = 4; break;
+		case '5': b = 5; break;
+		case '6': b = 6; break;
+		case '7': b = 7; break;
+		case '8': b = 8; break;
+		case '9': b = 9; break;
+		case 'T': b = 10; break;
+		case 'J': b = 11; break;
+		case 'Q': b = 12; break;
+		case 'K': b = 13; break;
+		case 'A': b = 14; break;
+		}
+		return b;
+	}
+	
+	static boolean crossed(int points, int value) {
+		int newP = points + value;
+		return ((newP <= 33 && points >= 34 || newP >= 34 && points <= 33) || 
+				(newP <= 55 && points >= 56 || newP >= 56 && points <= 55) || 
+				(newP <= 77 && points >= 78 || newP >= 78 && points <= 77));
+	}
+}
