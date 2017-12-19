@@ -1,0 +1,219 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package pkgfinal.project.honors.algorithms.and.data.structures;
+
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Arc;
+import javafx.scene.shape.Line;
+import javafx.stage.Stage;
+
+/**
+ *
+ * @author lillianlinden
+ */
+public class FinalProjectHonorsAlgorithmsAndDataStructures extends Application {
+    static int size = 100;
+    static int depth = 8;
+    static int fDepth = depth;
+    int counter = 0;
+    static int ccounta = 0;
+    static Point[] aPoints = new Point[size];
+    static Point[] bPoints = new Point[size];
+    static Point[] intersections = new Point[size];
+    static Point[] mirroredIntersections = new Point[size];
+    static Pane root = new Pane();
+    
+    @Override
+    public void start(Stage primaryStage) {
+        
+        //user draws two lines
+        
+        Scene scene = new Scene(root, 1280, 700);
+        
+        Button reset = new Button("Reset!!");
+        reset.setLayoutX(5);
+        reset.setLayoutY(40);
+        
+        TextField tfD = new TextField("Depth!!");
+        tfD.setLayoutX(5);
+        tfD.setLayoutY(5);
+        
+        Button bt = new Button("Go!");
+        bt.setLayoutX(5);
+        bt.setLayoutY(75);
+        root.getChildren().addAll(tfD, bt, reset);
+        
+        primaryStage.setTitle("Lillian's Final Project");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+        
+        Point a = new Point(0, 0);
+        root.setOnMouseClicked(e -> {
+            switch (counter) {
+                case 0: {
+                    a.x = e.getX();
+                    a.y = e.getY();
+                    counter++;
+                    break;
+                }
+                case 1: {
+                    Line l = new Line(a.x, a.y, e.getX(), e.getY());
+                    root.getChildren().add(l);
+                    counter++;
+                    break;
+                    }
+                case 2: {
+                    a.x = e.getX();
+                    a.y = e.getY();
+                    counter++;
+                    break;
+                }
+                case 3: {
+                    Line l = new Line(a.x, a.y, e.getX(), e.getY());
+                    root.getChildren().add(l);
+                    counter++;
+                    break;
+                }
+                default:
+                    break;
+            }
+            if (counter == 4) {
+                lineslineslines((Line)root.getChildren().get(root.getChildren().size() - 2), (Line)root.getChildren().get(root.getChildren().size() - 1));
+            }
+        });
+        
+        reset.setOnAction(e -> {
+            while(root.getChildren().size() > 3) {
+                root.getChildren().remove(root.getChildren().size() - 1);
+            }
+            ccounta = 0;
+            counter = 0;
+            depth = 1;
+        });
+        
+        bt.setOnAction(e -> {
+            if (counter >= 4) {
+                for (int i = 0; i < depth; i++) {
+                    findIntersections();
+                    findMirroredIntersections(intersections);
+                    drawLines(intersections, mirroredIntersections);
+                }
+            }
+        });
+        
+        tfD.setOnAction(e -> {
+            depth = Integer.parseInt(tfD.getText());
+            fDepth = depth;
+        });
+        
+        
+    }
+    
+    static void lineslineslines(Line a, Line b) {
+        // needs to plot all of the connecting points
+        for (int i = 0; i < size - 1; i++) {
+            aPoints[i] = new Point(a.getStartX() + i * (a.getEndX() - a.getStartX()) / (size - 1), 
+                    a.getStartY() + i * (a.getEndY() - a.getStartY()) / (size - 1));
+            bPoints[i] = new Point(b.getStartX() + i * (b.getEndX() - b.getStartX()) / (size - 1), 
+                    b.getStartY() + i * (b.getEndY() - b.getStartY()) / (size - 1));
+        }
+        aPoints[size - 1] = new Point(a.getEndX(), a.getEndY());
+        bPoints[size - 1] = new Point(b.getEndX(), b.getEndY());
+        for (int i = 0; i < size; i++) {
+            Line l = new Line (aPoints[i].x, aPoints[i].y, bPoints[size - 1 - i].x, bPoints[size - 1 - i].y);
+            root.getChildren().add(l);
+        }
+        ccounta++;
+    }
+    
+    static void findIntersections() {
+        for (int i = 0; i < size; i++) {
+            Line a = (Line)root.getChildren().get(root.getChildren().size() - i - 1);
+            Line b = (Line)root.getChildren().get(root.getChildren().size() - i - 2);
+            //find slopes
+            double mA = (a.getEndY() - a.getStartY()) / (a.getEndX() - a.getStartX());
+            double mB = (b.getEndY() - b.getStartY()) / (b.getEndX() - b.getStartX());
+            //find intersecting pt
+            double x = ((mA  * a.getStartX() - a.getStartY() - mB * b.getStartX() + b.getStartY()) / (mA - mB));
+            double y = mA * (x - a.getStartX()) + a.getStartY();
+            intersections[i] = new Point(x, y);
+        }
+    //    findMirroredIntersections(intersections);
+    }
+    
+    static void findMirroredIntersections(Point[] intersections) {
+        Line l = new Line(aPoints[0].x, aPoints[0].y, bPoints[0].x, bPoints[0].y);
+        if (fDepth - depth >= 1 && ccounta == 0) {
+            Line a = (Line)root.getChildren().get(root.getChildren().size() - 1);
+            Line b = (Line)root.getChildren().get(root.getChildren().size() - (size - 2) / 3 - (fDepth - depth) - 1);
+            l.setStartX(a.getStartX());
+            l.setStartY(a.getStartY());
+            l.setEndX(b.getEndX());
+            l.setEndY(b.getEndY());
+        }
+        double m = (l.getEndY() - l.getStartY()) / (l.getEndX() - l.getStartX());
+        for (int i = 0; i < intersections.length; i++) {
+//            double x = ((-1 * l.getStartY()) + (m * l.getStartX()) + ((1 / m) * intersections[i].x) + intersections[i].y)
+//                    / (m + (1 / m));
+//            double y = m * (x - l.getStartX()) + l.getStartY();
+            double x = ((-1 * aPoints[0].y) + (m * aPoints[0].x) + ((1 / m) * intersections[i].x) + intersections[i].y)
+                    / (m + (1 / m));
+            double y = m * (x - aPoints[0].x) + aPoints[0].y;
+            x += -1 * intersections[i].x + x;
+            y += -1 * intersections[i].y + y;
+            mirroredIntersections[i] = new Point(x, y);
+        }
+    //    drawLines(intersections, mirroredIntersections);
+    }
+    
+    static void drawLines(Point[] intersections, Point[] mirroredIntersections) {
+        if (depth == 0) {
+            return;
+        }
+        depth--;
+    //    findIntersections();
+        if (depth % 2 == 0) {
+            for (int i = 0; i < (size - 2) / 3 - (fDepth - depth); i++) {
+                Line l = new Line(intersections[size - i - 2].x, intersections[size - i - 2].y, 
+                    mirroredIntersections[i].x, mirroredIntersections[i].y);
+                root.getChildren().add(l);
+            }
+        } else {
+            for (int i = 0; i < (size - 2) / 3 - (fDepth - depth); i++) {
+            Line l = new Line(intersections[i].x, intersections[i].y, 
+                    mirroredIntersections[size - i - 2].x, mirroredIntersections[size - i - 2].y);
+            root.getChildren().add(l);
+        }
+        }
+        ccounta++;
+    }
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        launch(args);
+    }
+    
+}
+
+class Point {
+    double x;
+    double y;
+    
+    public Point(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+}
