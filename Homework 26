@@ -1,0 +1,53 @@
+public class HW26 {
+
+	public static void main(String[] args) {
+		String[] items = {"Laptop", "Jewelry set", "Vase", "Painting", "TV", "Silver", "Mirror", 
+				"Antique chair", "Mini sculpture", "Book shelf"};
+		int[] wt = {4, 2, 3, 5, 5, 6, 9, 7, 8, 10};
+		int[] val = {22, 20, 15, 30, 24, 54, 21, 32, 18, 25};
+
+		steal(wt, val, items, 7);
+		steal(wt, val, items, 16);
+		steal(wt, val, items, 32);
+		steal(wt, val, items, 30);
+		
+
+	}
+	
+	static void steal(int[] wt, int[] val, String[] items, int capacity) {
+		int[][] dp = new int[wt.length][capacity + 1];
+		
+		for (int i = 0; i < wt.length; i++) {
+			for (int j = 0; j <= capacity; j++) {
+				if (j < wt[i]) {
+					if (i > 0)
+						dp[i][j] = dp[i - 1][j];
+				} else if (i > 0) {
+					dp[i][j] = Math.max(dp[i - 1][j], val[i] + dp[i - 1][j - wt[i]]);
+					//val = value of the item; wt = weight of the item
+				} else {
+					dp[i][j] = val[i];
+				}
+			}
+		}
+		
+		System.out.println("Can steal $" + dp[wt.length - 1][capacity]);
+
+		int col = capacity, row = wt.length - 1;
+		System.out.println("You should take: ");
+		while (col > 0 && row >= 0 && dp[row][col] != 0) {
+			if (row != 0 && dp[row][col] == dp[row - 1][col]) {
+				// dont need to include item
+				row--;
+			} else {
+				System.out.print(items[row] + "  ");
+				col -= wt[row];
+				row--;
+			}
+		}
+		System.out.println();
+		System.out.println();
+		
+	}
+
+}
