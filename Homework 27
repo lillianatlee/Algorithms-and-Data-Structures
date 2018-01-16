@@ -26,7 +26,7 @@ import javafx.stage.Stage;
  * @author lillianlinden
  */
 public class AnimatedBinarySearch extends Application {
-    final int n = 50, size = 20, toFind = 24;
+    final int n = 100, size = 20, toFind = 24;
     int[] arr = new int[n + 1];
     Rectangle[] rec = new Rectangle[n + 1];
     Color notTheNumber = Color.GRAY;
