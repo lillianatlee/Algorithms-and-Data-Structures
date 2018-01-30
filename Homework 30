@@ -1,0 +1,86 @@
+import java.util.ArrayList;
+
+public class Tree<E> {
+	
+	private TreeNode<E> root;
+	
+	public int size() {
+		return size(root);
+	}
+	private int size(TreeNode<E> curr) {
+		if (curr == null) return 0;
+		return 1 + size(curr.left) + size(curr.right);
+	}
+	
+	public int emptyBranches() {
+		return emptyBranches(root);
+	}
+	private int emptyBranches(TreeNode<E> curr) {
+		if (curr == null) return 1;
+		return emptyBranches(curr.left) + emptyBranches(curr.right);
+	}
+	
+	public int countLeaves() {
+		return countLeaves(root);
+	}
+	private int countLeaves(TreeNode<E> curr) {
+		if (curr == null) return 0;
+		if (curr.left == null && curr.right == null) return 1;
+		return countLeaves(curr.left) + countLeaves(curr.right);
+	}
+	
+	public ArrayList<TreeNode<E>> getLeaves() {
+		return getLeaves(root);
+	}
+	private ArrayList<TreeNode<E>> getLeaves(TreeNode<E> curr) {
+		ArrayList<TreeNode<E>> list = new ArrayList<>();
+		if (curr == null) return list;
+		if (curr.left == null && curr.right == null) list.add(curr);
+		list.addAll(getLeaves(curr.left));
+		list.addAll(getLeaves(curr.right));
+		return list;
+	}
+	
+	public int countLeftNodes() {
+		return countLeftNodes(root);
+	}
+	private int countLeftNodes(TreeNode<E> curr) {
+		if (root == null) return -1;
+		if (curr.left == null) return 0;
+		return 1 + countLeftNodes(curr.left);
+	}
+
+	public static void main(String[] args) {
+		Tree<Integer> t1 = new Tree<>();
+		t1.root = new TreeNode(1);
+		t1.root.left = new TreeNode(2);
+		t1.root.right = new TreeNode(3);
+		System.out.println(t1.size());
+		
+		System.out.println(t1.root.data + " " + t1.root.left.data + " " + t1.root.right.data);
+		
+		Tree<String> t2 = new Tree<>();
+		System.out.println(t2.size());
+		
+		Tree<Character> t3 = new Tree<>();
+		t3.root = new TreeNode<>('a');
+		t3.root.left = new TreeNode<>('b');
+		t3.root.left.left = new TreeNode<>('c');
+		t3.root.left.right = new TreeNode<>('d');
+		t3.root.left.right.right = new TreeNode<>('e');
+		System.out.println(t3.size());
+		
+		System.out.println(t1.countLeaves() + " " + t2.countLeaves() + " " + t3.countLeaves());
+		System.out.println(t1.getLeaves() + " " + t2.getLeaves() + " " + t3.getLeaves());
+		System.out.println(t1.countLeftNodes() + " " + t2.countLeftNodes() + " " + t3.countLeftNodes());
+	}
+	
+	static class TreeNode<E> {
+		E data;
+		TreeNode<E> left, right;
+		TreeNode(E data) {
+			this.data = data;
+		}
+	}
+
+}
