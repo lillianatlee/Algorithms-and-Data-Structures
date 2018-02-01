@@ -45,9 +45,11 @@ public class Tree<E> {
 		return countLeftNodes(root);
 	}
 	private int countLeftNodes(TreeNode<E> curr) {
-		if (root == null) return -1;
-		if (curr.left == null) return 0;
-		return 1 + countLeftNodes(curr.left);
+        int num = 0;
+		if (root == null) return 0;
+		if (curr.left != null) num += 1 + countLeftNodes(curr.left);
+		if (curr.right != null) num += countLeftNodes(curr.right);
+		return num;
 	}
 
 	public static void main(String[] args) {
