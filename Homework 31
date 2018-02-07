@@ -1,0 +1,137 @@
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class BST<E extends Comparable<E>> {
+	private TreeNode<E> root;
+	private int size = 0;
+	
+	public static void main(String[] args) {
+		BST<Integer> t1 = new BST<>();
+		t1.root = new TreeNode<>(6);
+		t1.root.right = new TreeNode<>(8);
+		t1.root.left = new TreeNode<>(4);
+		t1.root.left.left = new TreeNode<>(2);
+		t1.preorder();
+		System.out.println();
+		t1.postorder();
+		System.out.println();
+		t1.inorder();
+		System.out.println(t1.contains(2));
+		
+		BST<Character> t2 = new BST<>();
+		char[] arrCh = {'k', 'r', 'w', 'b', 'c', 'm', 'o'};
+		for (char i: arrCh) {
+			t2.add(i);
+		}
+		t2.preorder();
+		System.out.println();
+		t2.postorder();
+		System.out.println();
+		t2.inorder();
+		System.out.println();
+		t2.levelOrder();
+		
+		
+
+	}
+	
+	public void preorder() {
+		preorder(root);
+	}
+	private void preorder(TreeNode curr) {
+		if (curr == null) return;
+		System.out.print(curr.data + " ");
+		preorder(curr.left);
+		preorder(curr.right);
+	}
+	
+	public void postorder() {
+		postorder(root);
+	}
+	private void postorder(TreeNode curr) {
+		if (curr == null) return;
+		postorder(curr.left);
+		postorder(curr.right);
+		System.out.print(curr.data + " ");
+	}
+	
+	public void inorder() {
+		inorder(root);
+	}
+	private void inorder(TreeNode curr) {
+		if (curr == null) return;
+		inorder(curr.left);
+		System.out.print(curr.data + " ");
+		inorder(curr.right);
+	}
+	
+	public void levelOrder() {
+		Queue<TreeNode<E>> queue = new LinkedList<>();
+		queue.offer(root);
+		while (!queue.isEmpty()) {
+			TreeNode<E> curr = queue.poll();
+			System.out.print(curr.data + " ");
+			if (curr.left != null) queue.offer(curr.left);
+			if (curr.right != null) queue.offer(curr.right);
+		}
+	}
+
+	
+	public boolean contains(E data)  {
+		return contains(data, root);
+	}
+	private boolean contains(E data, TreeNode<E> curr) {
+		if (curr == null) return false;
+		if (curr.data == data) return true;
+		return contains(data, (data.compareTo(curr.data) < 0) ? curr.left : curr.right);
+	}
+	
+	public boolean add(E data) {
+		return add(data, root);
+//		if (root == null) root = new TreeNode<>(data);
+//		else {
+//			TreeNode<E> curr = root, parent = root;
+//			while (curr != null) {
+//				if (curr.data.compareTo(data) == 0) return false;
+//				parent = curr;
+//				curr = (curr.data.compareTo(data) > 0) ? curr.left : curr.right;
+//			}
+//			TreeNode<E> newNode = new TreeNode<>(data);
+//			if (data.compareTo(parent.data) < 0) {
+//				parent.left = newNode;
+//			} else {
+//				parent.right = newNode;
+//			}
+//		}
+//		return true;
+	}
+	private boolean add(E data, TreeNode<E> curr) {
+		if (root == null) root = new TreeNode<>(data);
+		else {
+			if (curr.data.compareTo(data) == 0) return false;
+			if (curr.data.compareTo(data) > 0) {
+				if (curr.left == null) curr.left = new TreeNode<>(data);
+				else return add(data, curr.left);
+				// to the left
+			} else {
+				if (curr.right == null) curr.right = new TreeNode<>(data);
+				else return add(data, curr.right);
+				// to the right
+			}
+			
+		}
+		return true;
+	}
+	
+	public boolean remove(E data) {
+		return true;
+	}
+	
+	private static class TreeNode<E> {
+		E data;
+		TreeNode<E> left, right;
+		TreeNode(E d) {
+			data = d;
+		}
+	}
+}
