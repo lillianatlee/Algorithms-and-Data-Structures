@@ -105,7 +105,19 @@ public class minHeap<E extends Comparable<E>> {
 		}
 		if (index != -1) {
 			data[index] = data[--size];
-			percolateDown();
+			while (hasLeftChild(index)) {
+				int smallerChildIndex = leftChildIndex(index);
+				if (hasRightChild(index)) {
+					if(rightChild(index).compareTo(leftChild(index)) < 0) {
+						smallerChildIndex = rightChildIndex(index);
+					}
+				}
+				if (data[index].compareTo(data[smallerChildIndex]) < 0) break;
+				E tmp = data[index];
+				data[index] = data[smallerChildIndex];
+				data[smallerChildIndex] = tmp;
+				index = smallerChildIndex;
+			}
 			return true;
 		}
 		return false;
