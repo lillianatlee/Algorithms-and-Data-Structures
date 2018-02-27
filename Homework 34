@@ -1,0 +1,102 @@
+import java.util.HashMap;
+import java.util.Map;
+
+public class Trie {
+
+	public static void main(String[] args) {
+		Trie t = new Trie();
+		t.add("cart");
+		t.add("car");
+		t.add("cartel");
+		t.add("card");
+		
+		assert t.contains("car");
+		assert t.contains("cart");
+		assert t.contains("cartel");
+		assert t.contains("card");
+		assert !t.contains("carf");
+		assert !t.contains("boo");
+		
+		t.delete("car");
+		assert !t.contains("ca");
+		assert !t.contains("car");
+		
+		t.printAll();
+		t.printStartsWith("cart");
+
+	}
+	
+	private TrieNode root = new TrieNode();
+	
+	public void add(String s) {
+		TrieNode tmp = root;
+		for (int i = 0; i < s.length(); i++) {
+			char index = s.charAt(i);
+			if (!tmp.alpha.containsKey(index)) {
+				tmp.alpha.put(index, new TrieNode());
+			} 
+			tmp = tmp.alpha.get(index);
+		}
+		tmp.isEndOfWord = true;
+	}
+	
+	public boolean contains(String s) {
+		TrieNode tmp = root;
+		for (int i = 0; i < s.length(); i++) {
+			char index = s.charAt(i);
+			if (!tmp.alpha.containsKey(index)) 
+				return false;
+			tmp = tmp.alpha.get(index);
+		}
+		return tmp.isEndOfWord;
+	}
+	
+	public void delete(String s) {
+		delete(s, root, 0);
+	}
+	private boolean delete(String s, TrieNode curr, int index) {
+		if (index == s.length()) {
+			if (!curr.isEndOfWord) 
+				return false;
+			curr.isEndOfWord = false;
+			return curr.alpha.isEmpty();
+		}
+		char trieIndex = s.charAt(index);
+		if (!curr.alpha.containsKey(trieIndex)) return false;
+		
+		if (delete(s, curr.alpha.get(trieIndex), index + 1)) {
+			curr.alpha.remove(trieIndex);
+			return curr.alpha.isEmpty();
+		}
+		return false;
+	}
+	
+	public void printAll() {
+		printAll(root, "");
+	}
+	private void printAll(TrieNode curr, String s) {
+		if (curr.isEndOfWord) System.out.println(s);
+		for (char c: curr.alpha.keySet()) {
+			printAll(curr.alpha.get(c), s + c);
+		}
+	}
+	
+	public void printStartsWith(String start) {
+		printStartsWith(start, root, "");
+	}
+	private void printStartsWith(String start, TrieNode curr, String s) {
+		if (curr.isEndOfWord && s.length() >= start.length() && s.substring(0, start.length()).equals(start))
+			System.out.println(s);
+		for (char c: curr.alpha.keySet()) {
+			printStartsWith(start, curr.alpha.get(c), s + c);
+		}
+		
+	}
+	
+	private class TrieNode {
+		Map<Character, TrieNode> alpha = new HashMap<>();
+	//	TrieNode[] alpha = new TrieNode[26]; //0-'a', 1-'b'
+		boolean isEndOfWord;
+	}
+
+}
