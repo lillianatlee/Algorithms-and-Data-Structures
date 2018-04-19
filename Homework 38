@@ -1,0 +1,95 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Scanner;
+import java.util.Set;
+
+public class Ex28_1_Is_Connected {
+
+	public static void main(String[] args) throws FileNotFoundException {
+		Scanner in  = new Scanner(new File("graph.txt"));
+//		int n = in.nextInt(); in.nextLine();
+		int n = Integer.parseInt(in.nextLine());
+//		System.out.println("n = " + n);
+		ArrayList<Integer>[] adj = new ArrayList[n];
+		for (int i = 0; i < n; i++) {
+			String[] line = in.nextLine().split(" ");
+			int from = new Integer(line[0]);
+			adj[from] = new ArrayList<>();
+			for (int j = 1; j < line.length; j++) {
+				adj[from].add(new Integer(line[j]));
+			}
+		}
+//		System.out.println(isConnected(adj) ? "Connected" : "Not connected");
+//		printConnectedSets(adj);
+		
+		System.out.println(bfs(4, adj));
+	}
+	
+	static Set<Integer> visited = new HashSet<>();
+	
+	static boolean isConnected(ArrayList<Integer>[] adj) {
+		dfs(0, adj);
+		return (visited.size() == adj.length);
+	}
+	
+	static void printConnectedSets(ArrayList<Integer>[] adj) {
+//		ArrayList<Integer> list = new ArrayList<>(visited);
+//		ArrayList<ArrayList<Integer>> finalList = new ArrayList<>();
+//		for (int i = 0; i < list.size(); i++) {
+//			for (int j = 0; j < adj[i].size(); j++) {
+//				ArrayList<Integer> temp = new ArrayList<>();
+//				temp.add(i);
+//				temp.add(adj[i].get(j));
+//				finalList.add(temp);
+//			}
+//		}
+//		System.out.println(finalList);
+		
+		ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+		boolean[] checked = new boolean[adj.length];
+		for (int i = 0; i < checked.length; i++) {
+			if (!checked[i]) {
+				dfs(i, adj);
+				ArrayList<Integer> list = new ArrayList<>(visited);
+				for (int j: list)
+					checked[j] = true;
+				result.add(list);
+				visited.clear();
+			}
+		}
+		System.out.println(result);
+	}
+	
+	static void dfs(int from, ArrayList<Integer>[] adj) {
+		visited.add(from);
+		for (int to: adj[from]) {
+			if (!visited.contains(to)) {
+				dfs(to, adj);
+			}
+		}
+	}
+	
+	static ArrayList<Integer> bfs(int from, ArrayList<Integer>[] adj) {
+		visited.clear();
+		ArrayList<Integer> printThis = new ArrayList<>();
+		Queue<Integer> queue = new LinkedList<>();
+		queue.offer(from);
+		visited.add(from);
+		while (!queue.isEmpty()) {
+			int curr = queue.poll();
+			printThis.add(curr);
+			for (int i: adj[curr]) {
+				if (!visited.contains(i)) {
+					queue.offer(i);
+					visited.add(i);
+				}
+			}
+		}
+		return printThis;
+	}
+
+}
