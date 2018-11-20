@@ -1,0 +1,86 @@
+
+public class Sudoku_9x9 {
+	static int[][] a = 	{{0, 0, 0,	0, 0, 0, 	0, 0, 0}, 
+	 		 			 {0, 0, 0, 	0, 0, 0, 	0, 0, 0}, 
+	 		 		 	 {0, 0, 0, 	0, 0, 0, 	0, 0, 0}, 
+	 		 		 	 
+	 		 			 {0, 0, 0, 	0, 0, 0, 	0, 0, 0}, 
+	 		 			 {0, 0, 0,	0, 0, 0, 	0, 0, 0}, 
+	 		 			 {0, 0, 0, 	0, 0, 0, 	0, 0, 0}, 
+	 		 			 
+	 		 			 {0, 0, 0, 	0, 0, 0, 	0, 0, 0}, 
+	 		 			 {0, 0, 0, 	0, 0, 0, 	0, 0, 0}, 
+	 		 			 {0, 0, 0, 	0, 0, 0, 	0, 0, 0}};
+
+	public static void main(String[] args) {
+		System.out.println("before:");
+		printSudoku();
+		solve();
+		System.out.println("after:");
+		printSudoku();
+	}
+
+	static boolean solve() {
+		// search for the first non-zero cell
+		boolean found = false;
+		int emptyI = -1, emptyJ = -1;
+		for (int i = 0; i < a.length && !found; i++) {
+			for (int j = 0; j < a.length && !found; j++) {
+				if (a[i][j] == 0) {
+					emptyI = i;
+					emptyJ = j;
+					found = true;
+				}
+			}
+		}
+		if (!found) return true; // full of numbers (solved!)
+
+		for (int num = 1; num <= 9; num++) {
+			if (isOK(num, emptyI, emptyJ)) {
+				a[emptyI][emptyJ] = num;
+				if (solve())
+					return true;
+				a[emptyI][emptyJ] = 0;
+			}
+		}
+		return false;
+	}
+
+	static boolean isOK (int num, int I, int J) {
+		// check row
+		for (int j = 0; j < a.length; j++) {
+			if (j != J && a[I][j] == num) {
+				return false;
+			}
+		}
+		// check column
+		for (int i = 0; i < a.length; i++) {
+			if (i != I && a[i][J] == num) {
+				return false;
+			}
+		}
+		// check square
+		int cornerI = I / 3 * 3, cornerJ = J / 3 * 3;
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				int currI = cornerI + i;
+				int currJ = cornerJ + j;
+				if (!(currI == I && currJ == J) && a[currI][currJ] == num) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	static void printSudoku() {
+		for (int[] i : a) {
+			for (int j : i) {
+				System.out.print(j + " ");
+			}
+			System.out.println();
+		}
+	}
+
+}
